@@ -1,10 +1,10 @@
 # harness-engineering-skill
 
-A portable, framework-agnostic skill on **harness engineering** — the discipline of building the scaffolding around an LLM that turns it into an agent: the loop, the tools, the context, the plans, the subagents, the budgets, the guardrails, and the recovery paths.
+A portable markdown reference on **harness engineering** — the discipline of building the scaffolding around an LLM that turns it into an agent: the loop, the tools, the context, the plans, the subagents, the budgets, the guardrails, and the recovery paths.
 
-It is deliberately not tied to any one provider's API or framework. It shapes *how* a harness is built, not *which* concrete tool an agent must call. You can use it inside any agent harness that has a mechanism for loading contextual instructions — Claude Code, Cursor, Codex, Cline, Aider, your own custom loop — or just read it.
+It is framework- and provider-agnostic. It shapes *how* a harness is built, not *which* concrete tool any agent must call. The whole repo is plain markdown — usable by any agent harness with a mechanism for loading contextual instructions, and readable on its own as a short course.
 
-The skill itself lives in [`SKILL.md`](SKILL.md), with chapters under [`references/`](references/).
+The entry point is [`SKILL.md`](SKILL.md). Chapters live under [`references/`](references/).
 
 ## What's inside
 
@@ -21,45 +21,39 @@ The skill itself lives in [`SKILL.md`](SKILL.md), with chapters under [`referenc
 | [`09-skills-and-instructions.md`](references/09-skills-and-instructions.md) | Instructions and skills — portable methodology, progressive disclosure |
 | [`10-evaluation-and-iteration.md`](references/10-evaluation-and-iteration.md) | Knowing the harness is good — evals, observability, the add/measure/remove loop, review checklist |
 
-Source material is listed in [`references/sources.md`](references/sources.md).
+Source material is in [`references/sources.md`](references/sources.md).
 
-## How to use it
+## Use it
 
-The body of `SKILL.md` and every chapter is plain markdown. The only Claude-Code-specific bits are two frontmatter fields (`allowed-tools`, `argument-hint`) which other runtimes simply ignore. So:
+### Read it
 
-### In any harness with a skill / rules / instruction-loading mechanism
+It's a short course on harness engineering. The text stands on its own — no agent required.
 
-If your agent harness can load a markdown file as contextual guidance (Cursor rules, Codex skills, Cline `.clinerules`, Aider conventions, a system-prompt injection in your own loop, an MCP "skill" server, etc.), point it at `SKILL.md`. The chapters under `references/` are designed to be loaded *on demand* by the agent when it's working on that specific layer — if your harness supports progressive disclosure, expose them; if not, `SKILL.md` alone is still useful as a map and stance document.
+### Feed it to any agent harness
 
-A minimal integration: feed `SKILL.md` as part of the agent's system prompt, and let it `read` chapters from `references/` when it needs them.
+The minimal integration, which works regardless of what harness you're using: include `SKILL.md` in the agent's system prompt or initial context, and give the agent a way to read individual chapters from `references/` on demand. That's the whole protocol — markdown in, agent decisions out.
 
-### As a Claude Code skill
+If your harness has a more specific mechanism for contextual instructions (rules files, skills directories, conventions docs, MCP skill servers, etc.), drop the repo there. The format was designed so that an agent reading `SKILL.md` first sees the map (the chapter table), then loads only the chapters relevant to the task — progressive disclosure works the same way in any harness that lets the agent read files.
 
-Drop the skill into one of the directories Claude Code scans:
-
-**Per-project** (versioned alongside your agent code):
+Clone the repo:
 
 ```bash
-mkdir -p .claude/skills
-git clone https://github.com/hchen13/harness-engineering-skill.git .claude/skills/harness-engineering
+git clone https://github.com/hchen13/harness-engineering-skill.git
 ```
 
-**Global** (every project on your machine):
+Then point your harness at it. A few common targets:
 
-```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/hchen13/harness-engineering-skill.git ~/.claude/skills/harness-engineering
-```
+- **Claude Code** — `.claude/skills/harness-engineering/` (per-project) or `~/.claude/skills/harness-engineering/` (global)
+- **Any harness with a rules/conventions/skills directory** (Cursor, Codex, Cline, Aider, Continue, custom loops, …) — drop the repo into that directory, or point your harness's config at `SKILL.md`
+- **Your own agent loop** — load `SKILL.md` into the system prompt; expose a `read_file` tool over `references/`
 
-Restart Claude Code (or run `/skills`) and `harness-engineering` will appear in the available-skills list. Claude will load `SKILL.md` (the map) when relevant and pull individual chapters on demand.
+### A note on the frontmatter
 
-### Just read it
-
-It's also a short course on building agent harnesses well. You don't need an agent to get value out of it.
+`SKILL.md` carries a YAML frontmatter block. The fields `name`, `description`, and the body content are portable. The fields `allowed-tools` and `argument-hint` are Claude Code conventions and are simply ignored by other harnesses — no need to strip them.
 
 ## Where this came from
 
-Distilled from public material by Anthropic and others on building production LLM agents. See [`references/sources.md`](references/sources.md) for the primary sources.
+Distilled from public material by Anthropic and others on building production LLM agents. See [`references/sources.md`](references/sources.md).
 
 ## License
 
