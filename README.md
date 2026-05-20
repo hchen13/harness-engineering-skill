@@ -1,8 +1,8 @@
 # harness-engineering-skill
 
-A portable, framework-agnostic [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) on **harness engineering** — the discipline of building the scaffolding around an LLM that turns it into an agent: the loop, the tools, the context, the plans, the subagents, the budgets, the guardrails, and the recovery paths.
+A portable, framework-agnostic skill on **harness engineering** — the discipline of building the scaffolding around an LLM that turns it into an agent: the loop, the tools, the context, the plans, the subagents, the budgets, the guardrails, and the recovery paths.
 
-It is deliberately not tied to any one provider's API or framework. It shapes *how* a harness is built, not *which* concrete tool an agent must call.
+It is deliberately not tied to any one provider's API or framework. It shapes *how* a harness is built, not *which* concrete tool an agent must call. You can use it inside any agent harness that has a mechanism for loading contextual instructions — Claude Code, Cursor, Codex, Cline, Aider, your own custom loop — or just read it.
 
 The skill itself lives in [`SKILL.md`](SKILL.md), with chapters under [`references/`](references/).
 
@@ -23,29 +23,39 @@ The skill itself lives in [`SKILL.md`](SKILL.md), with chapters under [`referenc
 
 Source material is listed in [`references/sources.md`](references/sources.md).
 
-## Install as a Claude Code skill
+## How to use it
 
-Drop the skill into one of the directories Claude Code scans for skills:
+The body of `SKILL.md` and every chapter is plain markdown. The only Claude-Code-specific bits are two frontmatter fields (`allowed-tools`, `argument-hint`) which other runtimes simply ignore. So:
 
-**Per-project** (recommended — versioned alongside your agent code):
+### In any harness with a skill / rules / instruction-loading mechanism
+
+If your agent harness can load a markdown file as contextual guidance (Cursor rules, Codex skills, Cline `.clinerules`, Aider conventions, a system-prompt injection in your own loop, an MCP "skill" server, etc.), point it at `SKILL.md`. The chapters under `references/` are designed to be loaded *on demand* by the agent when it's working on that specific layer — if your harness supports progressive disclosure, expose them; if not, `SKILL.md` alone is still useful as a map and stance document.
+
+A minimal integration: feed `SKILL.md` as part of the agent's system prompt, and let it `read` chapters from `references/` when it needs them.
+
+### As a Claude Code skill
+
+Drop the skill into one of the directories Claude Code scans:
+
+**Per-project** (versioned alongside your agent code):
 
 ```bash
 mkdir -p .claude/skills
 git clone https://github.com/hchen13/harness-engineering-skill.git .claude/skills/harness-engineering
 ```
 
-**Global** (available in every project on your machine):
+**Global** (every project on your machine):
 
 ```bash
 mkdir -p ~/.claude/skills
 git clone https://github.com/hchen13/harness-engineering-skill.git ~/.claude/skills/harness-engineering
 ```
 
-Restart Claude Code (or run `/skills`) and `harness-engineering` will appear in the available-skills list. Trigger it by asking about harness design, agent loops, tool surfaces, subagents, budgets, or any of the chapter topics — Claude will load `SKILL.md` (the map) and pull individual chapters on demand.
+Restart Claude Code (or run `/skills`) and `harness-engineering` will appear in the available-skills list. Claude will load `SKILL.md` (the map) when relevant and pull individual chapters on demand.
 
-## Use without Claude Code
+### Just read it
 
-The frontmatter fields `allowed-tools` / `argument-hint` are Claude-Code-specific and other runtimes simply ignore them. The body is plain markdown — drop it into any agent that can read documentation, paste it into a prompt, or read it yourself.
+It's also a short course on building agent harnesses well. You don't need an agent to get value out of it.
 
 ## Where this came from
 
